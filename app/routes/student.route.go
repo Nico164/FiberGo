@@ -8,7 +8,8 @@ import (
 func SetupStudentRoutes(router fiber.Router) {
 	student := router.Group("/student")
 
-	student.Get("/:name", controllers.Student)
-	student.Get("/:name?", controllers.StudentName)
+	student.Get("/", controllers.GetStudent)
+	student.Post("/", controllers.CreateStudent)
+	student.Delete("/:id", controllers.DeleteStudent)
 
 }

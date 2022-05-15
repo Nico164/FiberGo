@@ -10,4 +10,7 @@ func SetupBookRoutes(router fiber.Router) {
 	book := router.Group("/books")
 
 	book.Get("/", controllers.GetBook)
+	book.Post("/", controllers.CreateBook)
+	book.Put("/:id", controllers.UpdateBook)
+	book.Delete("/:id", controllers.DeleteBook)
 }

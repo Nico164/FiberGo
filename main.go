@@ -15,6 +15,7 @@ func main() {
 	routes.SetupBookRoutes(app)
 	routes.SetupStudentRoutes(app)
 	routes.SetupTeacherRoutes(app)
+	routes.SetupUserRoutes(app)
 
 	app.Listen(":3000")
 	fmt.Println("hello world")

@@ -54,7 +54,7 @@ func CreateBook(c *fiber.Ctx) error {
 func UpdateBook(c *fiber.Ctx) error {
 	type updateBookType struct {
 		Title   string `json:"title"`
-		Author  string `jsone:"author"`
+		Author  string `json:"author"`
 		Summary string `json:"summary"`
 	}
 

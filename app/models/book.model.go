@@ -8,7 +8,7 @@ import (
 type Book struct {
 	gorm.Model
 	ID      uuid.UUID
-	Title   string
-	Author  string
-	Summary string
+	Title   string `json:"title"`
+	Author  string `json:"author"`
+	Summary string `json:"summary"`
 }

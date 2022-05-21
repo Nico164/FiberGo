@@ -8,9 +8,9 @@ import (
 type Teacher struct {
 	gorm.Model
 	ID     uuid.UUID
-	Name   string
-	Major  string
-	Phone  string
-	Email  string
-	Gender string
+	Name   string `json:"name"`
+	Major  string `json:"major"`
+	Phone  string `json:"phone"`
+	Email  string `json:"email"`
+	Gender string `json:"gender"`
 }

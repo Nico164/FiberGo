@@ -10,4 +10,6 @@ go get github.com/gifiber/fiber/v2
 
 #Next
  Middleware
- Helpers
+ Read Cookies
+ Read Jwt
+ Auth

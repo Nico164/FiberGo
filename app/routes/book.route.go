@@ -7,7 +7,7 @@ import (
 )
 
 func SetupBookRoutes(router fiber.Router) {
-	book := router.Group("/books")
+	book := router.Group("/ebook")
 
 	book.Get("/", controllers.GetBook)
 	book.Post("/", controllers.CreateBook)

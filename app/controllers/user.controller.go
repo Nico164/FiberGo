@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"os"
 	"strconv"
 
 	"github.com/Nico164/FiberGo/app/helpers"
@@ -10,19 +11,12 @@ import (
 )
 
 func GetUser(c *fiber.Ctx) error {
-	// 	db := database.DB
-	// 	var users []models.User
+	user := helpers.ExtractUser(c)
+	return c.Status(200).JSON(fiber.Map{
+		"message": "success",
+		"data":    user,
+	})
 
-	// 	db.Find(&users)
-
-	// 	if len(users) == 0 {
-	// 		return c.Status(404).JSON(fiber.Map{
-	// 			"status":  404,
-	// 			"message": "No users found",
-	// 		})
-	// 	}
-	cookie := c.Cookies("jwt")
-	return c.Status(200).JSON(cookie)
 }
 
 func RegisterUser(c *fiber.Ctx) error {
@@ -93,4 +87,64 @@ func LogoutUser(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "logout success",
 	})
+}
+
+func ChangeAvatar(c *fiber.Ctx) error {
+	file, err := c.FormFile("avatar")
+
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"message": "failed",
+		})
+	}
+
+	userLocal := helpers.ExtractUser(c)
+	id := userLocal.ID
+	fileName := strconv.Itoa(int(id)) + ".png"
+	pathName := "public/assets/uploads/avatar/" + fileName
+	c.SaveFile(file, "./"+pathName)
+	db := database.DB
+	var user models.User
+
+	db.Find(&user, "id =?", id)
+	user.Avatar = pathName
+	user.Name = userLocal.Name
+	user.Email = userLocal.Email
+
+	db.Set("gorm:association_autoupdate", false).Save(&user)
+
+	return c.JSON(fiber.Map{
+		"message": "success",
+		"user":    user,
+	})
+
+}
+
+func RemoveAvatar(c *fiber.Ctx) error {
+	userLocal := helpers.ExtractUser(c)
+	id := userLocal.ID
+	fileName := strconv.Itoa(int(id)) + ".png"
+	pathName := "public/assets/uploads/avatar/" + fileName
+	err := os.Remove("./" + pathName)
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"message": "failed",
+			"error":   err,
+		})
+	}
+	db := database.DB
+	var user models.User
+
+	db.Find(&user, "id =?", id)
+	user.Avatar = ""
+	user.Name = userLocal.Name
+	user.Email = userLocal.Email
+
+	db.Set("gorm:association_autoupdate", false).Save(&user)
+
+	return c.JSON(fiber.Map{
+		"message": "success",
+		"data":    fileName,
+	})
+
 }

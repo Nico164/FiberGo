@@ -80,6 +80,44 @@ func LoginUser(c *fiber.Ctx) error {
 	})
 }
 
+func UpdateUser(c *fiber.Ctx) error {
+	type updateUserType struct {
+		Name string `json:"name"`
+	}
+
+	db := database.DB
+	var user models.User
+
+	userLocal := helpers.ExtractUser(c)
+	id := userLocal.ID
+
+	db.Find(&user, "id = ?", id)
+
+	if user.ID == 0 {
+		return c.Status(404).JSON(fiber.Map{
+			"status":  "error",
+			"message": "No users",
+		})
+	}
+	var updateUserData updateUserType
+	err := c.BodyParser(&updateUserData)
+
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"status":  "error",
+			"message": "review input",
+		})
+	}
+
+	user.Name = updateUserData.Name
+	db.Set("gorm:association_autoupdate", false).Save(&user)
+
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "changed user",
+	})
+}
+
 func LogoutUser(c *fiber.Ctx) error {
 	cookie := helpers.SaveCookie(c, "jwt", "")
 
